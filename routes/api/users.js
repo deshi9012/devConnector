@@ -20,8 +20,9 @@ router.get('/test', (req, res) => {
 //@route POST api/users/register
 //@desc Register user route
 //@access Public
-router.post('/register', (req, res) => {
-  User.findOne({ email: req.body.email }).then(user => {
+router.post('/register', async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
     if (user) {
       return res.status(400).json({
         email: 'Email already exists!'
@@ -32,14 +33,29 @@ router.post('/register', (req, res) => {
         r: 'pg', //rating
         d: 'mm' //default
       });
-      const newUser = new User({
-        name: req.body.name,
-        email: req.body.email,
-        avatar: avatarUrl,
-        password: req.body.password
+
+      bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(req.body.password, salt, async (err, hash) => {
+          if (err) throw err;
+
+          const newUser = new User({
+            name: req.body.name,
+            email: req.body.email,
+            avatar: avatarUrl,
+            password: hash
+          });
+          try {
+            const response = await newUser.save();
+            return res.json(response);
+          } catch (error) {
+            console.log(error);
+          }
+        });
       });
     }
-  });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 module.exports = router;

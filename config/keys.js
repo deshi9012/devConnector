@@ -1,4 +1,6 @@
 module.exports = {
   mongoURI:
-    "mongodb://root:VErryoosibUgWa7@ds249992.mlab.com:49992/dev-connector"
+    'mongodb://root:Lam5gBNdgeTAUcq@ds135255.mlab.com:35255/dev-connector'
 };
+//root
+//Lam5gBNdgeTAUcq
